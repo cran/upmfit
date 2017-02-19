@@ -1,0 +1,165 @@
+---
+title: "upmfit Primer"
+author: "Avery I. McIntosh"
+#date: "2016"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{upmfit Primer}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette is long form documentation for the `R` package $upmfit$. It provides some background on the package method, developed by McIntosh, et al.,^[Extensions to Bayesian Generalized Linear Mixed Effects Models for Household Tuberculosis Transmission, $Statistics\ in\ Medicine$ (2017)] and walks the reader through examples of the package functions.
+
+## Background
+Tuberculosis (TB) household contact studies are a mainstay of TB research. The general framework of such studies is that individuals presenting with TB-like symptoms arrive at clinic, are diagnosd with TB, and are asked to participate in a household study where all household members are enrolled and have demographic and health variables recorded by a study team. The person first presenting as sick, the index case, often has disease characteristics recorded such as the duration of cough or HIV status. The remaining household members, the so-called household contacts, are usually given a Tuberculin Skin Test (TST) at baseline to test for latent TB infection, and then again later on after a period of follow-up, which could be 6 weeks to 6 month post study enrollment.
+
+A particularly difficult problem with these studies is that investigators are unable to statistically account for the fact that in an area with a high prevalence of TB, infection of a household contact from a person outside their home is quite likely, even if they are living with a person who has infectious TB. This omission of risk from a "community" source can introduce substantial bias into estimates of housheold risk factors for TB transmission. A further issue is that beyond prevalence estimates, investigators do not have much of an indication as to the risk of TB acquisition from outside the home.
+
+Household-community dynamic models have been proposed for other diseases such as flu, however the unique characteristics of TB (a long latency period and unobserved transmission) make the use of standard models for household-community infection ill-equiped to capture the dynamics of TB infection.
+
+## Method
+
+The Unified Probability Model (UPM) addresses the limitations of household contact studies for TB by modeling risk of infection from the community as a noise parameter in a Bayesian mixed effects logistic regression model of individual- and household-based risk factors for TB infection (e.g. number of windows in the home, age and smoking status for each contact). The parameterization of the model makes it weakly non-identifiable, meaning the score contains discontinuities for some parameter values. This limitation is particularly acute in the presence of household clustering, which is fundamental in household contact studies. However, with some very minimal prior probility distribution specification on the household clustering effect, the model can generate posterior probability distributions for coefficients of household risk, which can be exponentiated to yield odds ratios, as well as a posterior distribution of the risk of household-acquired and community-acquired infection among household contacts of a primary index case, what in the function output for `upmbuilder()` and `upmrun()` is returned as `pHHinfection` and `post.comm.risk`, respectively, and in the model specification in McIntosh, et al. is denoted $p^C$ and $p^{HH}$.
+
+It should be noted that, while the UPM and R package $upmfit$ were designed specifically with tuberculosis household contact studies in mind, the method is applicable to any scenario where there are two competing risks for a single outcome with unobserved linkage between the sources of risk and the outcome. Examples where this method could be applicable are in profiling the risk of MRSA infection from a nosocomial versus other source, or in modeling risk of TB infection among populations utilizing homeless shelters. Non-clinical applications of the UPM could be an industrial process control setting where a manufactured item has two sources of degradation, one observed and one unobserved, or a chemical mixing procedure where catalysis can occur from the mixing of an exogenous agent or autocatalysis.
+
+## Examples
+
+The $upmfit$ package comes with synthetic dataset `upmdata` inbuilt for application of the package functions by the user. Once the package library is loaded, the user can display the first few rows of the dataset and some of the data characteristics:
+  ```{r echo=FALSE}
+library(upmfit)
+```
+
+```{r, fig.show='hold'}
+head(upmdata)
+```
+
+```{r, fig.show='hold'}
+dim(upmdata) #dataset dimensions (rows by columns)
+```
+Each observation (row) in `upmdata` was simulated to have a particular risk of having outcome $y$, which was determined by a logit-transformed linear combination of predictors $x1$ through $x5$. The first four predictors are numeric, with the fourth being constant at the household or index case level. The final predictor $x5$ is binary. The parameter values for the predictors are:
+
+- $\beta_0$ = -1.50
+- $\beta_1$ = \ 0.15
+- $\beta_2$ = -2.25
+- $\beta_3$ = \ 0.00
+- $\beta_4$ = \ 0.20
+- $\beta_5$ = -0.10
+
+Each observation is clustered such that observations falling into the same cluster have some common Gaussian noise added to the linear component of risk. This noise component is also known as "random effects" or "hierarchical regression." In the synthetic dataset there are 108 households, roughly the size of many tuberculosis household studies. Additionally, 16 percent of the data were simulated such that irrespective of the individual risk of outcome $y$, those persons are assigned outcome $y$ = 1. This random assignment of outcomes to a subset of the at-risk population simulates the so-called community-acquired infection.
+
+Observe the following example application of function `upmbuilder()`. This function takes are argument: a dataset; if applicable, a vector indicating the columns in the dataset which are categorical variables, for restructuring of the model formulation; and if desirable, prior probability distribution parameters other than the default values (which are relatively non-informative on the odds-ratio scale). It outputs a list of three items: a JAGS model script, a design matrix (possibly updated due to restructing in the presence of categorical predictors); and a list of the modeled coefficients.
+
+First observe the output of the design matrix. In this example, there are no categorical variables.
+```{r}
+upmbuilder(upmdata)[[2]][1:5,]
+```
+The design matrix output is unchanged due to the absence of any categorical predictors. Now observe the reformulation of the design matrix in the presence of categorical predictors (the function `suppressWarnings()` is invoked below to supress the inbuilt warning in `upmbuilder()` which automatically gives a warning to users about reformulation of indicator variable prior probabilities in the presence of categorical variables).
+```{r}
+test.data <- data.frame(y=rbinom(10,1,runif(10)),
+                        x=rnorm(10),
+                        w=rnorm(10),
+                        z=c(rep("red",3),rep("green",3),rep("blue",4)),
+                        cluster=c(1,1,2,2,5:10)
+                        )
+#a simulated dataset with categorical predictor 'z'
+test.data
+```
+```{r}
+suppressWarnings(upmbuilder(test.data, categorical.columns = 4)[[2]])
+```
+Note that column $z$ in the original dataset has been reformulated as two new columns to reflect the indicator variable status of the predictors. Now the intercept variable references the $z$ variable level "blue."
+
+Next, observe the model formulation for the inbuilt dataset `upmdata` (the `cat()` function is invoked here because otherwise the model formulation is in one uninterrupted chunk for reading into function `upmfit()`):
+```{r,eval=FALSE}
+cat(upmbuilder(upmdata)[[1]])
+```
+
+
+```
+function(){}
+for(i in 1:n){
+y[i]~dbin(theta[i]+Pc[i]-Pc[i]*theta[i], 1)
+logit(theta[i])<-beta.0+beta.1*x1[i]+beta.2*x2[i]+beta.3*x3[i]+beta.4*x4[i]+beta.5*x5[i]+b.0[cluster[i]]
+logit(Pc[i])<-alpha
+}
+for(j in 1:max(cluster)){
+b.0[j]~dnorm(b.0.hat[j],tau.beta.0)
+b.0.hat[j]<-mu.beta.0
+}
+mu.beta.0~dnorm(0,0.5)
+tau.beta.0<-pow(sigma.b.0,-2)
+sigma.b.0~dunif(0,10)
+post.comm.risk<-exp(alpha)/(1+exp(alpha))
+pHHinfection<-1-(post.comm.risk+(1-pTBinfection))
+pTBinfection~dbeta(1.2+k,1.2+n-k)
+beta.0~dnorm(0,0.1)
+beta.1~dnorm(0,0.1)
+beta.2~dnorm(0,0.1)
+beta.3~dnorm(0,0.1)
+beta.4~dnorm(0,0.1)
+beta.5~dnorm(0,0.1)
+alpha~dnorm(0,0.44)
+}
+```
+If one were to run the above defined `test.data` through `upmbuilder()`, the model formulation and priors would automatically change to reflect the indicator variable parameterization. This point must be stressed: if the user inputs categorical variables and wishes to use prior probability distributions for model coefficients different than the default values, they must input the hyperparameters to reflect the indicator variable reformulation of the design matrix.
+
+Also note that the section of code defining clusters (households) is omitted in the model formula if there is not a variable in the input design matrix with title "cluster."
+
+Finally, observe the coefficient output for the two above mentioned datasets.
+```{r}
+suppressWarnings(upmbuilder(test.data, categorical.columns = 4))[[3]]
+upmbuilder(upmdata)[[3]]
+```
+
+To implement the model-building function `upmrun()`, the user will use syntax similar to that used in `upmbuilder()`, with the exception that `upmrun()` contains additional function options for specifying the MCMC characteristic of the sampler: number of MCMC samples desired by the user, the burn-in period, thinning interval, and so on. In this vignette the iterations are limited to 100 for timely package building, but in practice at least the default setting of 50000 should be used to ensure MCMC convergence.
+
+```{r}
+example.run <- upmrun(upmdata, n.iter=100)
+
+example.run
+```
+
+The output is identical to a `jags()` invocation run in `R` using a user-defined long form model script. Note that using the default settings for all MCMC sampler controls is not always sufficient for the posterior parameter estimates, such as the posterior median, to converge. Diagnostic `Rhat` could be less than the rule-of-thumb value of 1.10 for the variables, and the effective sample size `n.eff` can be low. These convergence indicators show that for chain convergence such that the user is sampling from the true posterior distribution for each parameter, the user may need to specify more samples, more thinning, a larger burn-in period, or some combination of all three controls. Further analysis of convergence using trace plots and overlaid chain densities is always warranted when assessing convergence of Bayesian models.
+
+To access the full posterior chains for each variable, load package $mcmcplots$ and convert the defined JAGS object into posterior chains of samples:
+```{r}
+#load package mcmcplots
+library(mcmcplots)
+
+#define object as posterior chains
+example.run_mcmc <- as.mcmc(example.run)
+
+#print first few observations of each chain
+example.run_mcmc[1:5,]
+```
+
+Note that the prior probability distribution for variable $alpha$ must be transformed to be interpretable on the unit interval. The default parameter values for $alpha$ are a Gaussian distribution with mean 0, standard deviation 1/$\sqrt{0.44}$ $\approx$ 1.51. BUGS-type scripts do not recognize standard deviation, but instead use $precision$, which is 1 divided by the square root of the standard deviation. Thus, to generate an informative prior distribution on $alpha$ that translates into a prior on $p^C$ having mean and median close to 0.10, the following function argument would be added to the model: `prior.alpha = c(-2.2, 1/sqrt(3))`. Observe the distribution of $alpha$ and $p^C$ for these values:
+
+```{r, echo=FALSE}
+values<-rnorm(5000,-2.2, sd=1/sqrt(3))
+hist(exp(values)/(1+exp(values)), xlab="prior p^C distribution", main="", yaxt='n', ylab="")
+hist(values, xlab="prior alpha distribution", main="", yaxt='n', ylab="")
+```
+```{r}
+#summary of p^C:
+alpha.values <- rnorm(5000,-2.2, sd=1/sqrt(3))
+summary(exp(alpha.values)/(1+exp(alpha.values)))
+```
+Care must be taken in specifying a prior probability distribution for the model parameters. The UPM does well in simulation with relatively non-informative priors (the defaults for this package), however there are certainly times when the user would wish to specify an informative prior. A good example might be on a variable such as smoking status. The effect of smoking on odds of TB acquisition may not be exactly known, but smoking is certainly not protective against transmission. To ignore this obvious direction of effect would be a mistake. Thus, like all Bayesian models, care should be taken when choosing prior probability distributions for UPM parameters, and it may be useful to run the model with a range of informative priors to assess the sensitivity of posterior estimates to prior information.
+
+Note that in the construction of the posterior risk of household-acquired infection term $p^{HH}$, one must specify a prior probability distribution on the risk of TB infection in the study population. The default prior probability for this term is relatively non-informative: a Beta-distributed random variable with primary and secondary shape parameters both equal to 1.2. For the often substantial sample size used in household contact studies (often in the hundreds or thousands) the posterior probability distribution is robust to prior distribution specification. In this version, the prior specification for $p^{TB}$ used to generate $p^{HH}$ is fixed. Future iterations of this package will allow for user-specified prior shape parameters to this term.
+
+
+To select competing parameter sets for the UPM, or for comparison of the UPM to a competing Bayesian model, we recommend the model fit tool known as the Deviance Information Criterion. This model selection tool is calcualated and output automatically by JAGS. It is defined as
+\begin{equation}
+\text{DIC} = \hat{D} +2p_D,
+\end{equation}
+where $\hat{D}$ is the model deviance ($-2$ times the log-likelihood) calculated at the means of the individual parameter posterior distributions, and $p_D$ is the effective number of parameters, defined as $\bar{D}-\hat{D}$, where $\bar{D}$ is the mean of posterior distribution of the deviance. A model with smaller DIC than a competing model is judged to estimate the data better, while accounting for overfitting. DIC is a Bayesian analogue to the well established Akaike Information Criterion (AIC), which can be defined as a log-likelihood penalized for parameter dimensionality, aiming to balance model fit with model complexity. The dimensionality penalization is not exactly translatable into a hierarchical Bayesian setting, where random effects are estimated directly as part of fitting the model. The notion of model complexity in this setting must take into account the prior probabilty specification and joint constraints on model parameters. Thus, model complexity is defined for DIC using $p_D$, and not simply the number of modeled parameters, as is done for AIC. Note that JAGS and WINBUGS/OPENBUGS calculate deviance in the same manner, but the same is not true for $p_D$, which is calculated differently for JAGS and WINBUGS/OPENBUGS, which may return different values due to the calculation method. Thus, comparative analysis of model fit should be done using the same software platform.
+
+
+
+
+
+

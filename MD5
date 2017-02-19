@@ -1,0 +1,16 @@
+97d02d47557a4ff990f26901f0209d45 *DESCRIPTION
+907b5a344bb2da0d1cffcbe83d9b0454 *NAMESPACE
+8e3906203cb7248fe1170c910effe124 *R/upmbuilder.R
+65ec95a0986542d7f76b9a4d3076409f *R/upmdata.R
+2c85b9d5cd0ab03796395ac3d4aa5d3e *R/upmfit.R
+0125c99bcfc91aeee75bd10ee8be2979 *R/upmrun.R
+ef39093067ce584ffc4dd1359f3bb9c3 *build/vignette.rds
+1bef6dbbe1f30d55a1c0dc5d5f62e2e7 *data/upmdata.rda
+c87ab285b44f81480a191037300fd60f *inst/doc/upm-primer.R
+23a2233bf5b743b511941f5174894f17 *inst/doc/upm-primer.Rmd
+f1d779c309bc3c1be317f7be30a76802 *inst/doc/upm-primer.html
+9a4de95445b6bc1d8807122cf0fdfbcc *man/upmbuilder.Rd
+116e7dd133163f18e276cbcc176aefc5 *man/upmdata.Rd
+d81b4120bf2ac158cb0fb2ada8de0f97 *man/upmfit.Rd
+96af880c1c0ae004492b4c5af1f2adae *man/upmrun.Rd
+23a2233bf5b743b511941f5174894f17 *vignettes/upm-primer.Rmd

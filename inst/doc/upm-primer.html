@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Avery I. McIntosh" />
+
+
+<title>upmfit Primer</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">upmfit Primer</h1>
+<h4 class="author"><em>Avery I. McIntosh</em></h4>
+
+
+
+<p>This vignette is long form documentation for the <code>R</code> package <span class="math inline">\(upmfit\)</span>. It provides some background on the package method, developed by McIntosh, et al.,<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> and walks the reader through examples of the package functions.</p>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>Tuberculosis (TB) household contact studies are a mainstay of TB research. The general framework of such studies is that individuals presenting with TB-like symptoms arrive at clinic, are diagnosd with TB, and are asked to participate in a household study where all household members are enrolled and have demographic and health variables recorded by a study team. The person first presenting as sick, the index case, often has disease characteristics recorded such as the duration of cough or HIV status. The remaining household members, the so-called household contacts, are usually given a Tuberculin Skin Test (TST) at baseline to test for latent TB infection, and then again later on after a period of follow-up, which could be 6 weeks to 6 month post study enrollment.</p>
+<p>A particularly difficult problem with these studies is that investigators are unable to statistically account for the fact that in an area with a high prevalence of TB, infection of a household contact from a person outside their home is quite likely, even if they are living with a person who has infectious TB. This omission of risk from a “community” source can introduce substantial bias into estimates of housheold risk factors for TB transmission. A further issue is that beyond prevalence estimates, investigators do not have much of an indication as to the risk of TB acquisition from outside the home.</p>
+<p>Household-community dynamic models have been proposed for other diseases such as flu, however the unique characteristics of TB (a long latency period and unobserved transmission) make the use of standard models for household-community infection ill-equiped to capture the dynamics of TB infection.</p>
+</div>
+<div id="method" class="section level2">
+<h2>Method</h2>
+<p>The Unified Probability Model (UPM) addresses the limitations of household contact studies for TB by modeling risk of infection from the community as a noise parameter in a Bayesian mixed effects logistic regression model of individual- and household-based risk factors for TB infection (e.g. number of windows in the home, age and smoking status for each contact). The parameterization of the model makes it weakly non-identifiable, meaning the score contains discontinuities for some parameter values. This limitation is particularly acute in the presence of household clustering, which is fundamental in household contact studies. However, with some very minimal prior probility distribution specification on the household clustering effect, the model can generate posterior probability distributions for coefficients of household risk, which can be exponentiated to yield odds ratios, as well as a posterior distribution of the risk of household-acquired and community-acquired infection among household contacts of a primary index case, what in the function output for <code>upmbuilder()</code> and <code>upmrun()</code> is returned as <code>pHHinfection</code> and <code>post.comm.risk</code>, respectively, and in the model specification in McIntosh, et al. is denoted <span class="math inline">\(p^C\)</span> and <span class="math inline">\(p^{HH}\)</span>.</p>
+<p>It should be noted that, while the UPM and R package <span class="math inline">\(upmfit\)</span> were designed specifically with tuberculosis household contact studies in mind, the method is applicable to any scenario where there are two competing risks for a single outcome with unobserved linkage between the sources of risk and the outcome. Examples where this method could be applicable are in profiling the risk of MRSA infection from a nosocomial versus other source, or in modeling risk of TB infection among populations utilizing homeless shelters. Non-clinical applications of the UPM could be an industrial process control setting where a manufactured item has two sources of degradation, one observed and one unobserved, or a chemical mixing procedure where catalysis can occur from the mixing of an exogenous agent or autocatalysis.</p>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>The <span class="math inline">\(upmfit\)</span> package comes with synthetic dataset <code>upmdata</code> inbuilt for application of the package functions by the user. Once the package library is loaded, the user can display the first few rows of the dataset and some of the data characteristics:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(upmdata)</code></pre></div>
+<pre><code>##       x1     x2    x3    x4 x5 cluster y
+## 1  5.293  0.272 2.093 4.354  0       1 1
+## 2  1.398  0.975 1.911 4.354  0       1 0
+## 3  0.449 -0.002 0.031 4.354  0       1 1
+## 4  4.371  3.165 2.009 4.354  0       1 0
+## 5 -0.181  1.963 3.830 4.354  1       1 1
+## 6 -2.240  0.121 5.435 4.354  1       1 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(upmdata) <span class="co">#dataset dimensions (rows by columns)</span></code></pre></div>
+<pre><code>## [1] 800   7</code></pre>
+<p>Each observation (row) in <code>upmdata</code> was simulated to have a particular risk of having outcome <span class="math inline">\(y\)</span>, which was determined by a logit-transformed linear combination of predictors <span class="math inline">\(x1\)</span> through <span class="math inline">\(x5\)</span>. The first four predictors are numeric, with the fourth being constant at the household or index case level. The final predictor <span class="math inline">\(x5\)</span> is binary. The parameter values for the predictors are:</p>
+<ul>
+<li><span class="math inline">\(\beta_0\)</span> = -1.50</li>
+<li><span class="math inline">\(\beta_1\)</span> =  0.15</li>
+<li><span class="math inline">\(\beta_2\)</span> = -2.25</li>
+<li><span class="math inline">\(\beta_3\)</span> =  0.00</li>
+<li><span class="math inline">\(\beta_4\)</span> =  0.20</li>
+<li><span class="math inline">\(\beta_5\)</span> = -0.10</li>
+</ul>
+<p>Each observation is clustered such that observations falling into the same cluster have some common Gaussian noise added to the linear component of risk. This noise component is also known as “random effects” or “hierarchical regression.” In the synthetic dataset there are 108 households, roughly the size of many tuberculosis household studies. Additionally, 16 percent of the data were simulated such that irrespective of the individual risk of outcome <span class="math inline">\(y\)</span>, those persons are assigned outcome <span class="math inline">\(y\)</span> = 1. This random assignment of outcomes to a subset of the at-risk population simulates the so-called community-acquired infection.</p>
+<p>Observe the following example application of function <code>upmbuilder()</code>. This function takes are argument: a dataset; if applicable, a vector indicating the columns in the dataset which are categorical variables, for restructuring of the model formulation; and if desirable, prior probability distribution parameters other than the default values (which are relatively non-informative on the odds-ratio scale). It outputs a list of three items: a JAGS model script, a design matrix (possibly updated due to restructing in the presence of categorical predictors); and a list of the modeled coefficients.</p>
+<p>First observe the output of the design matrix. In this example, there are no categorical variables.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">upmbuilder</span>(upmdata)[[<span class="dv">2</span>]][<span class="dv">1</span>:<span class="dv">5</span>,]</code></pre></div>
+<pre><code>##       x1     x2    x3    x4 x5 cluster y
+## 1  5.293  0.272 2.093 4.354  0       1 1
+## 2  1.398  0.975 1.911 4.354  0       1 0
+## 3  0.449 -0.002 0.031 4.354  0       1 1
+## 4  4.371  3.165 2.009 4.354  0       1 0
+## 5 -0.181  1.963 3.830 4.354  1       1 1</code></pre>
+<p>The design matrix output is unchanged due to the absence of any categorical predictors. Now observe the reformulation of the design matrix in the presence of categorical predictors (the function <code>suppressWarnings()</code> is invoked below to supress the inbuilt warning in <code>upmbuilder()</code> which automatically gives a warning to users about reformulation of indicator variable prior probabilities in the presence of categorical variables).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test.data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">y=</span><span class="kw">rbinom</span>(<span class="dv">10</span>,<span class="dv">1</span>,<span class="kw">runif</span>(<span class="dv">10</span>)),
+                        <span class="dt">x=</span><span class="kw">rnorm</span>(<span class="dv">10</span>),
+                        <span class="dt">w=</span><span class="kw">rnorm</span>(<span class="dv">10</span>),
+                        <span class="dt">z=</span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;red&quot;</span>,<span class="dv">3</span>),<span class="kw">rep</span>(<span class="st">&quot;green&quot;</span>,<span class="dv">3</span>),<span class="kw">rep</span>(<span class="st">&quot;blue&quot;</span>,<span class="dv">4</span>)),
+                        <span class="dt">cluster=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">5</span>:<span class="dv">10</span>)
+                        )
+<span class="co">#a simulated dataset with categorical predictor 'z'</span>
+test.data</code></pre></div>
+<pre><code>##    y          x          w     z cluster
+## 1  0  0.9532668  0.2774668   red       1
+## 2  0 -0.7744096  0.2448819   red       1
+## 3  0  1.0604747 -1.1251807   red       2
+## 4  1  0.8758088 -0.9981249 green       2
+## 5  1 -0.5462657  2.8004981 green       5
+## 6  1 -0.4122659  1.1273394 green       6
+## 7  0 -0.0379532 -0.9825754  blue       7
+## 8  1  0.2578133 -0.5506083  blue       8
+## 9  1 -0.8936549  1.2780891  blue       9
+## 10 0  0.8720952 -0.4469763  blue      10</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressWarnings</span>(<span class="kw">upmbuilder</span>(test.data, <span class="dt">categorical.columns =</span> <span class="dv">4</span>)[[<span class="dv">2</span>]])</code></pre></div>
+<pre><code>##             x          w zgreen zred cluster y
+## 1   0.9532668  0.2774668      0    1       1 0
+## 2  -0.7744096  0.2448819      0    1       1 0
+## 3   1.0604747 -1.1251807      0    1       2 0
+## 4   0.8758088 -0.9981249      1    0       2 1
+## 5  -0.5462657  2.8004981      1    0       5 1
+## 6  -0.4122659  1.1273394      1    0       6 1
+## 7  -0.0379532 -0.9825754      0    0       7 0
+## 8   0.2578133 -0.5506083      0    0       8 1
+## 9  -0.8936549  1.2780891      0    0       9 1
+## 10  0.8720952 -0.4469763      0    0      10 0</code></pre>
+<p>Note that column <span class="math inline">\(z\)</span> in the original dataset has been reformulated as two new columns to reflect the indicator variable status of the predictors. Now the intercept variable references the <span class="math inline">\(z\)</span> variable level “blue.”</p>
+<p>Next, observe the model formulation for the inbuilt dataset <code>upmdata</code> (the <code>cat()</code> function is invoked here because otherwise the model formulation is in one uninterrupted chunk for reading into function <code>upmfit()</code>):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="kw">upmbuilder</span>(upmdata)[[<span class="dv">1</span>]])</code></pre></div>
+<pre><code>function(){}
+for(i in 1:n){
+y[i]~dbin(theta[i]+Pc[i]-Pc[i]*theta[i], 1)
+logit(theta[i])&lt;-beta.0+beta.1*x1[i]+beta.2*x2[i]+beta.3*x3[i]+beta.4*x4[i]+beta.5*x5[i]+b.0[cluster[i]]
+logit(Pc[i])&lt;-alpha
+}
+for(j in 1:max(cluster)){
+b.0[j]~dnorm(b.0.hat[j],tau.beta.0)
+b.0.hat[j]&lt;-mu.beta.0
+}
+mu.beta.0~dnorm(0,0.5)
+tau.beta.0&lt;-pow(sigma.b.0,-2)
+sigma.b.0~dunif(0,10)
+post.comm.risk&lt;-exp(alpha)/(1+exp(alpha))
+pHHinfection&lt;-1-(post.comm.risk+(1-pTBinfection))
+pTBinfection~dbeta(1.2+k,1.2+n-k)
+beta.0~dnorm(0,0.1)
+beta.1~dnorm(0,0.1)
+beta.2~dnorm(0,0.1)
+beta.3~dnorm(0,0.1)
+beta.4~dnorm(0,0.1)
+beta.5~dnorm(0,0.1)
+alpha~dnorm(0,0.44)
+}</code></pre>
+<p>If one were to run the above defined <code>test.data</code> through <code>upmbuilder()</code>, the model formulation and priors would automatically change to reflect the indicator variable parameterization. This point must be stressed: if the user inputs categorical variables and wishes to use prior probability distributions for model coefficients different than the default values, they must input the hyperparameters to reflect the indicator variable reformulation of the design matrix.</p>
+<p>Also note that the section of code defining clusters (households) is omitted in the model formula if there is not a variable in the input design matrix with title “cluster.”</p>
+<p>Finally, observe the coefficient output for the two above mentioned datasets.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressWarnings</span>(<span class="kw">upmbuilder</span>(test.data, <span class="dt">categorical.columns =</span> <span class="dv">4</span>))[[<span class="dv">3</span>]]</code></pre></div>
+<pre><code>## [1] &quot;beta.0&quot; &quot;beta.1&quot; &quot;beta.2&quot; &quot;beta.3&quot; &quot;beta.4&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">upmbuilder</span>(upmdata)[[<span class="dv">3</span>]]</code></pre></div>
+<pre><code>## [1] &quot;beta.0&quot; &quot;beta.1&quot; &quot;beta.2&quot; &quot;beta.3&quot; &quot;beta.4&quot; &quot;beta.5&quot;</code></pre>
+<p>To implement the model-building function <code>upmrun()</code>, the user will use syntax similar to that used in <code>upmbuilder()</code>, with the exception that <code>upmrun()</code> contains additional function options for specifying the MCMC characteristic of the sampler: number of MCMC samples desired by the user, the burn-in period, thinning interval, and so on. In this vignette the iterations are limited to 100 for timely package building, but in practice at least the default setting of 50000 should be used to ensure MCMC convergence.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">example.run &lt;-<span class="st"> </span><span class="kw">upmrun</span>(upmdata, <span class="dt">n.iter=</span><span class="dv">100</span>)</code></pre></div>
+<pre><code>## module glm loaded</code></pre>
+<pre><code>## Compiling model graph
+##    Resolving undeclared variables
+##    Allocating nodes
+## Graph information:
+##    Observed stochastic nodes: 800
+##    Unobserved stochastic nodes: 118
+##    Total graph size: 12887
+## 
+## Initializing model</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">example.run</code></pre></div>
+<pre><code>## Inference for Bugs model at &quot;/var/folders/3h/5ywnq74520nfv8rly6p_dmlh0000gn/T//RtmpkzFwyH/model1dff21e931f4.txt&quot;, fit using jags,
+##  3 chains, each with 100 iterations (first 50 discarded)
+##  n.sims = 150 iterations saved
+##                mu.vect sd.vect    2.5%     25%     50%     75%   97.5%
+## beta.0          -2.258   1.342  -4.265  -3.371  -2.530  -1.183   0.107
+## beta.1           0.222   0.146  -0.056   0.123   0.209   0.317   0.493
+## beta.2          -4.316   1.012  -6.269  -4.904  -4.331  -3.558  -2.318
+## beta.3          -0.181   0.250  -0.876  -0.253  -0.147  -0.045   0.326
+## beta.4           0.469   0.265  -0.009   0.265   0.476   0.637   1.016
+## beta.5          -0.433   0.800  -2.015  -0.865  -0.450  -0.054   1.359
+## mu.beta.0       -0.784   0.918  -2.067  -1.519  -0.930  -0.173   1.046
+## pHHinfection     0.148   0.029   0.094   0.128   0.147   0.164   0.203
+## post.comm.risk   0.211   0.023   0.161   0.195   0.213   0.226   0.254
+## sigma.b.0        3.212   0.828   1.704   2.444   3.314   3.796   4.698
+## deviance       825.047  15.301 793.265 814.360 826.407 835.801 851.175
+##                 Rhat n.eff
+## beta.0         3.772     3
+## beta.1         1.175    16
+## beta.2         2.398     4
+## beta.3         1.637     7
+## beta.4         1.959     5
+## beta.5         1.124    35
+## mu.beta.0      1.990     5
+## pHHinfection   1.311    10
+## post.comm.risk 1.704     6
+## sigma.b.0      2.991     4
+## deviance       1.072    29
+## 
+## For each parameter, n.eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor (at convergence, Rhat=1).
+## 
+## DIC info (using the rule, pD = var(deviance)/2)
+## pD = 110.2 and DIC = 935.3
+## DIC is an estimate of expected predictive error (lower deviance is better).</code></pre>
+<p>The output is identical to a <code>jags()</code> invocation run in <code>R</code> using a user-defined long form model script. Note that using the default settings for all MCMC sampler controls is not always sufficient for the posterior parameter estimates, such as the posterior median, to converge. Diagnostic <code>Rhat</code> could be less than the rule-of-thumb value of 1.10 for the variables, and the effective sample size <code>n.eff</code> can be low. These convergence indicators show that for chain convergence such that the user is sampling from the true posterior distribution for each parameter, the user may need to specify more samples, more thinning, a larger burn-in period, or some combination of all three controls. Further analysis of convergence using trace plots and overlaid chain densities is always warranted when assessing convergence of Bayesian models.</p>
+<p>To access the full posterior chains for each variable, load package <span class="math inline">\(mcmcplots\)</span> and convert the defined JAGS object into posterior chains of samples:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load package mcmcplots</span>
+<span class="kw">library</span>(mcmcplots)</code></pre></div>
+<pre><code>## Loading required package: coda</code></pre>
+<pre><code>## Warning: package 'coda' was built under R version 3.3.2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#define object as posterior chains</span>
+example.run_mcmc &lt;-<span class="st"> </span><span class="kw">as.mcmc</span>(example.run)
+
+<span class="co">#print first few observations of each chain</span>
+example.run_mcmc[<span class="dv">1</span>:<span class="dv">5</span>,]</code></pre></div>
+<pre><code>## [[1]]
+##          beta.0     beta.1    beta.2     beta.3    beta.4    beta.5
+## [1,] -0.9807289 0.09281821 -5.580786 -0.7299452 0.6207864 -1.080816
+## [2,] -1.2650245 0.03936879 -5.525109 -0.7505877 0.6636299  1.209771
+## [3,] -1.2140731 0.24755521 -5.587167 -0.9520320 0.6478741  1.393055
+## [4,] -1.2557144 0.13510205 -5.667918 -0.8504242 0.7993285  1.494370
+## [5,] -1.3539319 0.06791666 -5.592306 -0.8831148 0.4585562  1.274226
+##      deviance  mu.beta.0 pHHinfection post.comm.risk sigma.b.0
+## [1,] 818.1864 -1.4854618    0.1537017      0.2250023  3.621268
+## [2,] 833.9170 -0.9050296    0.1418943      0.2307581  3.515708
+## [3,] 831.9699 -1.5826095    0.1386300      0.2406710  3.942612
+## [4,] 820.3968 -1.1360879    0.1606185      0.2183772  3.575530
+## [5,] 814.2532 -0.8540137    0.1051514      0.2606706  3.570303
+## 
+## [[2]]
+##         beta.0      beta.1    beta.2     beta.3    beta.4     beta.5
+## [1,] -4.256739 -0.05419337 -5.257774  0.1092233 0.6347516 -0.5631470
+## [2,] -4.289139  0.42076017 -5.650885 -0.1839725 0.6528995 -0.5250978
+## [3,] -4.222557  0.41516282 -5.230273 -0.1713673 0.9006543 -0.8318569
+## [4,] -3.837967  0.26935009 -5.290811 -0.2181727 0.6398469 -0.7116408
+## [5,] -3.897061  0.26159389 -4.847695 -0.2472581 0.6960326 -0.6403933
+##      deviance   mu.beta.0 pHHinfection post.comm.risk sigma.b.0
+## [1,] 809.5547  0.04465329   0.14021802      0.2072171  3.571338
+## [2,] 802.8869 -0.43551302   0.11050942      0.2319731  3.310286
+## [3,] 812.2898 -0.53315554   0.12332849      0.2159276  3.592864
+## [4,] 815.7514  0.38865116   0.13328916      0.2162410  3.477887
+## [5,] 826.4629  0.22064270   0.07293174      0.2524666  3.195803
+## 
+## [[3]]
+##          beta.0     beta.1    beta.2        beta.3      beta.4      beta.5
+## [1,] -0.5100618 0.20659232 -4.073020  0.0127790309 -0.00759144 -0.73532092
+## [2,] -0.4547172 0.13539856 -3.756220 -0.0040940053  0.22697941 -0.23478335
+## [3,] -0.4078059 0.05115238 -3.456113 -0.0105406490  0.06160016 -0.31511917
+## [4,] -0.2947321 0.06179592 -3.500758 -0.0003751443  0.15143673 -0.24653238
+## [5,]  0.2847193 0.14087663 -3.497360 -0.1230872340  0.15328087 -0.03781239
+##      deviance mu.beta.0 pHHinfection post.comm.risk sigma.b.0
+## [1,] 815.0231 -1.758840    0.1224736      0.2098310  3.042628
+## [2,] 810.4950 -2.047335    0.1529152      0.1997978  2.870742
+## [3,] 821.0664 -1.839556    0.1479164      0.1919286  2.945661
+## [4,] 808.6391 -2.054152    0.2103109      0.1613118  2.917380
+## [5,] 802.9224 -1.825428    0.1939100      0.1601808  2.301566</code></pre>
+<p>Note that the prior probability distribution for variable <span class="math inline">\(alpha\)</span> must be transformed to be interpretable on the unit interval. The default parameter values for <span class="math inline">\(alpha\)</span> are a Gaussian distribution with mean 0, standard deviation 1/<span class="math inline">\(\sqrt{0.44}\)</span> <span class="math inline">\(\approx\)</span> 1.51. BUGS-type scripts do not recognize standard deviation, but instead use <span class="math inline">\(precision\)</span>, which is 1 divided by the square root of the standard deviation. Thus, to generate an informative prior distribution on <span class="math inline">\(alpha\)</span> that translates into a prior on <span class="math inline">\(p^C\)</span> having mean and median close to 0.10, the following function argument would be added to the model: <code>prior.alpha = c(-2.2, 1/sqrt(3))</code>. Observe the distribution of <span class="math inline">\(alpha\)</span> and <span class="math inline">\(p^C\)</span> for these values:</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAYAAAAUg66AAAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAB2MSURBVHgB7Z0H0BRF+odfQIwks6KCglqIGbOioifmMtcdah14imgZzjKXSGkpZusAI4IB811h9tQzl4eWemBOgIIc4ThFJYiKEuzrt//O/GeXndn9ZreZb+Z7ugp2psPb3U/3/LbTt9PKWCc4CEAAAhkQaJ1BnmQJAQhAwBFAgOgIEIBAZgQQoMzQkzEEIIAA0QcgAIHMCCBAmaEnYwhAAAGiD0AAApkRQIAyQ0/GEIAAAkQfgAAEMiOAAGWGnowhAAEEiD4AAQhkRgABygw9GUMAAggQfQACEMiMAAKUGXoyhgAEECD6AAQgkBkBBCgz9GQMAQggQPQBCEAgMwIIUGboyRgCEECA6AMQgEBmBBCgzNCTMQQggADRByAAgcwIIECZoSdjCEAAAaIPQAACmRFAgDJDT8YQgAACRB+AAAQyI4AAZYaejCEAAQSIPgABCGRGAAHKDD0ZQwACCBB9AAIQyIwAApQZejKGAAQQIPoABCCQGQEEKDP0ZAwBCCBA9AEIQCAzAghQZujJGAIQQIDoAxCAQGYEEKDM0JMxBCCAANEHIACBzAggQJmhJ2MIQAABog9AAAKZEUCAMkNPxhCAAAJEH4AABDIjgABlhp6MIQABBIg+AAEIZEYAAcoMPRlDAAIIEH0AAhDIjAAClBl6MoYABBAg+gAEIJAZAQQoM/RkDAEIIED0AQhAIDMCCFBm6MkYAhBAgOgDEIBAZgQQoMzQkzEEIIAA0QcgAIHMCCBAmaEnYwhAAAGiD0AAApkRQIAyQ0/GEIAAAkQfgAAEMiOAAGWGnowhAAEEiD4AAQhkRgABygw9GUMAAggQfQACEMiMAAKUGXoyhgAEECD6AAQgkBkBBCgz9GQMAQggQPQBCEAgMwIIUGboyRgCEECA6AMQgEBmBBCgzNCTMQQggADRByAAgcwIIECZoSdjCEAAAaIPQAACmRFAgDJDT8YQgAACRB+AAAQyI4AAZYaejCEAAQSIPgABCGRGAAHKDD0ZQwACCBB9AAIQyIwAApQZejKGAAQQIPoABCCQGQEEKDP0ZAwBCCBA9AEIQCAzAghQZujJGAIQWAkEzY/AkiVLZPDgwTJz5sy6CtexY0cZMWKErLbaanXZITEEfBFAgHyRrcPujBkz5N5775VbbrmlDisi1157rYwfP1723XffuuyQGAK+CCBAvsjWabdDhw7Sr1+/uqyMHDmyrvQkhoBvAqwB+SaMfQhAIJYAAhSLhgAIQMA3AQTIN2HsQwACsQQQoFg0BEAAAr4JIEC+CWMfAhCIJYAAxaIhAAIQ8E0AAfJNGPsQgEAsAQQoFg0BEICAbwIIkG/C2IcABGIJIECxaAiAAAR8E0CAfBPGPgQgEEsAAYpFQwAEIOCbAALkmzD2IQCBWAIIUCwaAiAAAd8EECDfhLEPAQjEEkCAYtEQAAEI+CaAAPkmjH0IQCCWAAIUi4YACEDANwEEyDdh7EMAArEEEKBYNARAAAK+CSBAvgljHwIQiCWAAMWiIQACEPBNAAHyTRj7EIBALAEEKBYNARCAgG8CCJBvwtiHAARiCSBAsWgIgAAEfBNAgHwTxj4EIBBLgHfDx6LJf8CyZctk+vTpMnHixLoqs/nmm0vbtm3rskFiCFQigABVolIQPxWeAQMGSI8ePVLXaNKkSTJkyBAZOnRoahskhEAcAQQojkwB/HUENGLECDnnnHNS1+a+++6TV199NXV6EkIgiQBrQEl0CIMABLwSQIC84sU4BCCQRAABSqJDGAQg4JUAAuQVL8YhAIEkAghQEh3CIAABrwQQIK94MQ4BCCQRQICS6BAGAQh4JYAAecWLcQhAIIkAApREhzAIQMArAQTIK16MQwACSQQQoCQ6hEEAAl4JIEBe8WIcAhBIIoAAJdEhDAIQ8EoAAfKKF+MQgEASAQQoiQ5hEICAVwIIkFe8GIcABJIIIEBJdAiDAAS8EkCAvOLFOAQgkEQAAUqiQxgEIOCVAALkFS/GIQCBJAIIUBIdwiAAAa8EECCveDEOAQgkEUCAkugQBgEIeCWAAHnFi3EIQCCJAAKURIcwCEDAKwEEyCtejEMAAkkEEKAkOoRBAAJeCSBAXvFiHAIQSCKAACXRIQwCEPBKAAHyihfjEIBAEgEEKIkOYRCAgFcCCJBXvBiHAASSCCBASXQIgwAEvBJAgLzixTgEIJBEAAFKokMYBCDglQAC5BUvxiEAgSQCKyUFEgYBJTBt2jS566676oLRq1cv0X84CEQJIEBRGlwvR2DChAny+uuvy5ZbbrlcWFM8Tj31VFm2bJm0bs2guyncih4XASp6C9dZv19++UW6detW9whozJgxYoypszQkLxoBvo6K1qLUBwI5IoAA5aixKCoEikYAASpai1IfCOSIAAKUo8aiqBAoGgEEqGgtSn0gkCMCCFCOGouiQqBoBBCgorUo9YFAjgggQDlqLIoKgaIR4CBig1t00qRJstdee0n37t1TW54/f77MnTs3dXoSQiAvBBCgBrfUAw88IAMHDpRjjz02teUpU6ZI//79U6cnIQTyQgAB8tBSHTp0kF133TW15R9++EFatWqVOj0JIZAXAqwB5aWlKCcECkgAASpgo1IlCOSFAAKUl5ainBAoIAEEqICNSpUgkBcCCFBeWopyQqCABBCgAjYqVYJAXgggQHlpKcoJgQIS4BxQARu1OVbp119/lb59+9Z1vmnBggXy7LPPyvrrr98cq0iZUhBAgFJAI0k6AhdffLGstFL6Ljdq1Ch5+umnRX/gHlcMAul7QzHqTy1WIIH99ttPVl555dQ5/u1vf0udloTNkwBrQM2zXSgVBFoEAQSoRTQzlYRA8ySAADXPdqFUEGgRBBCgFtHMVBICzZMAAtQ824VSQaBFEGAXrEU0czEqqb8SOWzYMHnhhRdSV2jRokVuG/+oo45KbYOEjSOAADWOJZY8E/jkk0+kZ8+e0q9fv9Q5ff/99zJ06FBBgFIjbGhCBKihODHmk4D+SmT79u3luOOOS53NW2+9VddZpNQZk7AiAQSoIhY8i0xg4cKF8thjj9VVxU022aSun92tK/MCJUaACtSYVKU6Af3B/08//VQefvjh6pETYjz++OPy5ptvSpcuXRJiVQ/q3LlzXX8fVz2H5h0DAWpw+7Rt21aGDBki8+bNS215zpw5snTpUrngggtS29CE+sebo0ePlpkzZ6a2M3HiRPnyyy/rLosWQP8WrE2bNqnLMnnyZJk1a5ast956qW2oAKnbbLPNUtsIEu65557BZV2fHTt2TJ1+yZIl0q1bN/n4449T28gyYStjXZYFKFre+lffulNTr9O1Dp0q1ONWX311+emnn+ox4dLq328tXry4Ljv6phBdAK7HqbjrA1eva9euneibR+pxjbCh+atwbLrppvUURXr37u1+aaAuIxklRoAyAk+2EICACAcR6QUQgEBmBFgDajD6u+++Wz7//PO6FycbUawPP/xQunbtKp06dWqEubpsjBs3TvbZZ5+6bDQisU4Dp06dKjvuuGMjzNVlQ9fmdP1m0KBBddnJc2IEqMGtp6d0Z8yYITvvvHODLTfdnP56oL6hdaONNmp64ganGDt2rKyzzjqZ7/h89dVX8sYbb8iqq67a4Bo23dx7770nurCOADWdHSliCGyxxRayww47yODBg2NirDhvXeA899xzm8XIY+TIkXLLLbdI69bZzvr1IOLs2bPl1ltvXXENEZPTjTfeKN98801MaMvwzrY3tAzG1BICEIghgADFgMEbAhDwTwAB8s+YHCAAgRgCCFAMGLwhAAH/BBAg/4zJAQIQiCGAAMWAwRsCEPBPAAHyz5gcIACBGAIIUAwYvCEAAf8E+GPUBjP++uuv3Wnfen4yolFF0p/R0Peor7HGGo0ymdqOHorcdtttU6dvVEL9dYD//ve/0r1790aZTG1HDyEuW7ZMNthgg9Q28p4QAcp7C1J+COSYAFOwHDceRYdA3gkgQHlvQcoPgRwTQIBy3HgUHQJ5J4AA5b0FKT8EckwAAcpx41F0COSdAAKU9xak/BDIMQEEKMeNR9EhkHcCCFDeW5DyQyDHBBCgHDceRYdA3gkgQHlvQcoPgRwTQIBSNl6aF8qmSZOyeJkkS1s/fZtskV1aLkVmEtQNAQpI1PCpr/PV95vrmy/WWmstOeaYY+S7776rmvK+++6TPn36iL4qWV+T89prr1VNk6cI77//vpx44omy5ppruvdcDR06tGrxP/vsMzn00ENFX9msXPQ1Ri+99FLVdHmJkLavBPX78ccf3R/MnnXWWYFXMT+tOuNqJHD22Wcb+1fUxj4o5p///KfZfvvtjX0Fj7Hf4LEWNJ59t7qxr6Qx9kE1p59+urHvpDL2pYGxafIUYB8UY1+uZ44//nhj33NlxowZY6ygmKuuuiq2Gla0jX1XmenVq5d56KGHjH2XmjnssMOMffe7effdd2PT5SkgTV+J1u+MM84wVnHMmWeeGfUu3LUUrkaeKvTRRx8Z+04r8+STT4Y52G9x10mef/750K/8YquttjJ2dFDivc0225iTTz65xC+vN5dffrmxoxizaNGisApXXHGFsS8hND///HPoF72wb4913MaPHx96L1iwwLRr187Yb/zQL68XaftKUN+XX37Z2BG22XDDDQsvQEzBahzY6vTAjmTkkEMOCVNYcZEtt9xS9A2kldysWbNk4sSJcvTRR5cEH3nkkfLcc8+V+OX1Rt8Eq0yibxrV+n377bcyYcKEitWyIx/RFxXusssuYbhOxfTNqVaIQr+8XqTpK0FdFy5cKKeccooMHz5c1l577czfJBuUy9cnAlQj2SlTpsi6667rRCiapHPnzqI/QlbJffHFF867/NXIeq8/RlWExVflUql+WnF9DXIlp2+OtVPRkiB9XfK///1v2X333Uv883iTpq8E9TzvvPOkZ8+e0r9//8Cr0J+8G77G5v3+++/dwnN5dF14jRMg/TZTp99kUadp9JfwdAFbRS3PTrmU169Tp06uSnFcyuurnOxah/To0UMGDhxYHpy7+zR9RStpp/IyduxY+eSTT3JX57QFRoBqJGcXSCu+17xVq1ayePHiilZWWun/8GqcSi4uXaW4zdVPuZTXL7hfsmRJ1WLrw3r44YfLjBkz3O6gTnPz7tL0lfnz5zvxveGGG2STTTbJO4Kay88UrEZU+ru98+bNWy62+un6RSVnFxGdt3auqAvsxKWLxm3u15W4BPVt3759YvF1BLjffvuJbsnruondVUyMn5fASky07El95cILL3TTez3i8Zo9pqH/dCtf1xH12i7o56X6TSonI6AacamYBD8i3qZNmzCVrnPoGZ9KLvixcf0R9KjTNLrgWu0BjaZprtdax/K1nqC+ST/8PnfuXDnggAPcYvW4cePcukdzrWNTy5Wmr3zwwQcybdo0+d3vfleSna6L2Z1Xtz7WtWvXkrAi3DACqrEVtWPo4TD9NgqcvnVCd7n233//wKvkUzvi1ltvvdwu2TPPPBObpsRADm5URHTtQte0Aqe7gjq622mnnQKvkk9dfNedMx0R6OKzLroWyaXpK3//+99l+vTpJf90h3XAgAHOb+ONNy4Sov+vS3D2gM/qBOx0wegZnsmTJxs7NDZWeEzv3r1LDiLqAbKrr746NGa3m93Bw0cffdToWZdrrrnG3U+dOjWMk+eL2bNnuwOEemDOjmqMFWh3hmXEiBFhtR544AHz+9//3thX4ji/UaNGuXNAeihz9OjRJf/s8YQwXZ4v0vSV8vpqXyvCuajyekXvOYgYpVHlWkVnzz33dA+PXWA2ffv2NXoYMeq6dOliDjrooNBr6dKlxm6tuofUyr7Rg4n2TzPC8CJc2BGdO3io9dMDdIMGDTJa78BdcMEFjpldcHZee+21l7vX+OX/ouyC9Hn8TNNXyuvZEgSI94LZJ6CpTg/Z2VPRFbfl42zpIuKcOXPEClRclFz724cnnCoEu3+5rlCDCp+mrzQo61yYQYBy0UwUEgLFJMAidDHblVpBIBcEEKBcNBOFhEAxCSBAxWxXagWBXBBAgHLRTBQSAsUkgAAVs12pFQRyQQABykUzUUgIFJMAAlTMdqVWEMgFAQQoF81EISFQTAIIUDHblVpBIBcEEKBcNBOFhEAxCSBAxWxXagWBXBBAgHLRTBQSAsUkgAAVs12pFQRyQQABykUzUUgIFJMAAlTMdqVWEMgFAQQoF81EISFQTAIIUDHblVpBIBcEEKBcNBOFhEAxCSBAxWxXagWBXBBAgHLRTBQSAsUkgAAVs12pFQRyQQABykUzUUgIFJMAAlTMdqVWEMgFAQQoF81EISFQTAIIUDHbteG1+vrrr2XGjBlV7X7zzTfuDbBVIxIBApYAApSDbrDmmmvK9ddfn2lJjz76aNl1111l8eLFy5VDXz982mmniX3vvay33nqy/vrry0YbbSS33XbbcnFr8WjTpo3ccccdLupLL70krVq1ki+//LKWpPLrr7/KyJEjRV+FneSiTP/xj3+4PGoR2CSb5Xk3texJtosahgDloGX79esn22yzTWYlfffdd+W9994Tfef72LFjS8qxYMECOeigg+Tll18WLee//vUveeqpp2TfffeVs846S5599tmS+E296dy5s/Tv31/at29fU1It3xlnnCHLli1LjO+DaXneTS17YoGLGmhwEKhCYMCAAeYPf/iDueKKK8wuu+xSEvuAAw4w7dq1M1988UWJv9706dPHbLzxxsaK1HJhSR6tW7c2dhSTFCU27KGHHjL2WTU//PBDbJzygOeee86lmT59enlQk+7T5N2kDAoYWQpYp2ZbpX322cc8/vjj5vjjjzdrr7226d27t7nnnnvC8r7++utmjz32MC+88IKxUxij8b/77jtjRxNmzJgxYbyvvvrKqCjYb1izzjrrmCOOOMJMmTIlDI+zE0b47eLKK680F110kRkxYoTp3r276datmzn33HNLHt45c+aYVVZZxbz44otm5syZxk6PzFtvveUsqLDY6ZG58cYby027+8mTJzshsetCFcPVc9q0aeZPf/qTsdM206tXL1f3qAC9/fbbZqeddjKzZs1yNubPn29OOukkF99Oo5zIBeWxIy+z2WabOTHZYYcdzP3332/iWESZBgL0xBNPmN1228107NjR7L///uajjz4Kyz1kyBBzyimnhPd68corr7iyzZ0711TKu7zsmmbcuHFm7733Nh06dDCbb76542+nixrknLbJ4MGDzYMPPmi0DlqWgw8+2HEK4hTpEwFaga2pnU47lAqQdkTtbPpAa+dV98wzz7j7rl27ujhHHXWU8+/UqZO57rrr3LVdgzFbb7212XTTTc29995r7LDfjUrU7n/+8x8XJ86OC4z8pw+Upttiiy1c3o8++qgTtT/+8Y9hrKuvvtp06dLF2CmN8zvssMPMCSec4K5fffVV97C/8cYbYfymXPzyyy/uAd5uu+3MI488YuyakRNUHcEEIyAVPr2fOnWqM61lUz4armlUKFZeeWVj16HcKOz000938e+8807z6aef1sQ0EKA11ljDXHPNNa49VKB0ZKeiq+7EE090Xxju5rf/HnvsMZeXirSOAMvzLi/7O++849pXvzCefPJJc9NNNzn+hx56aGhW22TDDTd0ddQR5/Dhw422/8477xzGKdIFArQCW1MFaPvttzd2sTLMdeDAga6zqYcKhz5s+tBHXVSAbr75ZteJP//88zCKjpJUyAYNGuT84uyECX670M6uo42JEyeGQcFDM378eLNkyRI3hbrsssvCcH1w2rZta2bPnm1uuOGG8AEMIzThwi40O1vBQ65J//rXvzqbcQKk4nPJJZeEuWg5tB4qNurKp0FxLKJMAwE655xzQrs6hVtrrbXM+eef7/yqCVClvAOWgXjqyEeFJNr+KpTa5nbB2uWjddG2jI5ohw0b5uLoSKtojkVo2/or0tnRj9txCfK0oxyxaw9iO1fg5RZww5uyiwkTJohdhxE7aglD7IPidqjefPPN0E8v7Ld4yX2lmx133FF69OgRBvXt21dWX311t+i8aNEit6P05z//OQy3IyCx00i322RHDM7fPqxheFMuPvjgA7HTK7HrRGGyY489VqwohvflF3aKJH/5y1/cQrOdqoqdyspdd90lPXv2LI9acl8LiwMPPDBMo3XTxXU7vQv96rmwwiF2BCR29FjS/nZ65cxG20552ClxmJ2dqrnrhQsXhn5FuYhv6aLUsJnVQ7eno063rdXZb7zQO/pAhp6/Xdg1E7fFXe6vD5idgpV4J9kJIpaXR/21TFoe3Xk6/PDD3UMexNedMPXTdHY057wnTZoUBC/3aUc3y/kFHnYUJxtssEFw6z7t6MrlX+IZubEjBjnuuOPk7rvvFn141113Xbn44our7nrVwsKOUCI5iSubHWGV+KW90XNUKui6MxZ1Wi679ibRfLROUWfX4NxttZ29aJq8XCNAK7ildNs66uz0yd1qJwycHYIHl8t9aueMjpaCCPrtGHxTBn5JdoI45eVRfz3XEy1PELf8067duG9z3Xqv5J5++mmx60cyatSoSsFip1OxdamYwHraaazYaZYoN7sG40Ypdioodq0kLonzr4WFnXKW2NA87HqM89OzSJXCSxIk3OgoVUd2ldpOR5DREU+CmcIFIUAruEntgm1JjnYh140m7G5WiX/cjV2AdkP5efPmhVH0AJzdkREVhKa6Dz/8UKJDe50m6AMRjG6S7OkIya6NiF0gFz0rFHU65bBrR+7skF10jQaF13aXR95//32xO1uhn5bnxx9/DO+jF3q48Mgjj3RnkewCsRxzzDHuWh9etaNOhUKdMmmqi06Dli5dKnajIGSq+ekp76j7+OOPo7eJeduFcjdt1vNSUaf1tYvYYT7RsJZwjQCt4Fa2Ozdu+qAPuX6D62nhyy+/vOZSnH322S6u3Q1ya0f6UOgajZ7itQvaNdsJIurDbxev3cOlU6lTTz3VTW123333IErip55Y1tGSCsPQoUPFbj27dSN7nED04VJxCkYR5YZUvHRkYLfhxR4tcNM+zT/Orbrqqm7KdemllzrBVRHW0ZCekg7WeIIDi3Ybu+bT00F+Z555phN3HaUoZ53SXnjhhS5Y16o0Hz2Rrmt2o0ePFrsLGSR1n9XyttvrYrf6xS4qi448VcDscQqxxw/EHskosdViboq2qt6c66O7YLoFr1votoO5LefoDlOwYxPdFdL6RHds9F7PvdhFV2dDz+Hotvzzzz+vQc7F2QnCg0/dcbF/PmGseLjzPLq7pWdO7IMdRKnpU8/76G6enmvReuk/PaOku1zVnB25uPM/Wg/NX3lo2rhdMCu0xo58HBPNxy6Yu12x4JiAll3Pz2iYPREd7iwmMQ12wW6//XZjRc6ltWtTxv6JRlj8n376ydjT046T2lb+0W14jVied/kumO5+6ZkrK1QuD83LLnQb3cYPnLZJ+Za7ngvTPK0ABtEK89lKa2Irh1sBBOyZG7EH2ty3qo5YdAEyacenWpF0rUabr3zRslq6IFxHTDpK0Z01taWLncG3eBCnqZ+6mKp1Kl9crmZHF2k1b92Bq8Xpgqwy1HWkSgx1ZKfTJl00b4rTv3XTOqjdYDoXTa/TVf1XvpgcjVMtb20zHUXpyDBYYI6mb0nXTWudlkTGc111cbZeV+u6US35NMpW0oOZVA79A9amOF1UtqeeY5PYUWNsWFKArtXYEWpsFBXJaiJdLW8VtqQ8YjMvYABrQAVsVKoEgbwQYAq2AlvKntZ1Z1zSTpkaXVT791XuZyvKt+8bnQ/2IBBHAAGKI4M/BCDgnQBTMO+IyQACEIgjgADFkcEfAhDwTgAB8o6YDCAAgTgCCFAcGfwhAAHvBBAg74jJAAIQiCOAAMWRwR8CEPBOAAHyjpgMIACBOAIIUBwZ/CEAAe8EECDviMkAAhCII4AAxZHBHwIQ8E4AAfKOmAwgAIE4AghQHBn8IQAB7wQQIO+IyQACEIgjgADFkcEfAhDwTgAB8o6YDCAAgTgCCFAcGfwhAAHvBBAg74jJAAIQiCOAAMWRwR8CEPBOAAHyjpgMIACBOAL/A4jsl3HgDq5VAAAAAElFTkSuQmCC" alt /><!-- --><img src="data:image/png;base64,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" alt /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#summary of p^C:</span>
+alpha.values &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">5000</span>,-<span class="fl">2.2</span>, <span class="dt">sd=</span><span class="dv">1</span>/<span class="kw">sqrt</span>(<span class="dv">3</span>))
+<span class="kw">summary</span>(<span class="kw">exp</span>(alpha.values)/(<span class="dv">1</span>+<span class="kw">exp</span>(alpha.values)))</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## 0.01018 0.06976 0.10020 0.11200 0.14120 0.47610</code></pre>
+<p>Care must be taken in specifying a prior probability distribution for the model parameters. The UPM does well in simulation with relatively non-informative priors (the defaults for this package), however there are certainly times when the user would wish to specify an informative prior. A good example might be on a variable such as smoking status. The effect of smoking on odds of TB acquisition may not be exactly known, but smoking is certainly not protective against transmission. To ignore this obvious direction of effect would be a mistake. Thus, like all Bayesian models, care should be taken when choosing prior probability distributions for UPM parameters, and it may be useful to run the model with a range of informative priors to assess the sensitivity of posterior estimates to prior information.</p>
+<p>Note that in the construction of the posterior risk of household-acquired infection term <span class="math inline">\(p^{HH}\)</span>, one must specify a prior probability distribution on the risk of TB infection in the study population. The default prior probability for this term is relatively non-informative: a Beta-distributed random variable with primary and secondary shape parameters both equal to 1.2. For the often substantial sample size used in household contact studies (often in the hundreds or thousands) the posterior probability distribution is robust to prior distribution specification. In this version, the prior specification for <span class="math inline">\(p^{TB}\)</span> used to generate <span class="math inline">\(p^{HH}\)</span> is fixed. Future iterations of this package will allow for user-specified prior shape parameters to this term.</p>
+To select competing parameter sets for the UPM, or for comparison of the UPM to a competing Bayesian model, we recommend the model fit tool known as the Deviance Information Criterion. This model selection tool is calcualated and output automatically by JAGS. It is defined as
+\begin{equation}
+\text{DIC} = \hat{D} +2p_D,
+\end{equation}
+<p>where <span class="math inline">\(\hat{D}\)</span> is the model deviance (<span class="math inline">\(-2\)</span> times the log-likelihood) calculated at the means of the individual parameter posterior distributions, and <span class="math inline">\(p_D\)</span> is the effective number of parameters, defined as <span class="math inline">\(\bar{D}-\hat{D}\)</span>, where <span class="math inline">\(\bar{D}\)</span> is the mean of posterior distribution of the deviance. A model with smaller DIC than a competing model is judged to estimate the data better, while accounting for overfitting. DIC is a Bayesian analogue to the well established Akaike Information Criterion (AIC), which can be defined as a log-likelihood penalized for parameter dimensionality, aiming to balance model fit with model complexity. The dimensionality penalization is not exactly translatable into a hierarchical Bayesian setting, where random effects are estimated directly as part of fitting the model. The notion of model complexity in this setting must take into account the prior probabilty specification and joint constraints on model parameters. Thus, model complexity is defined for DIC using <span class="math inline">\(p_D\)</span>, and not simply the number of modeled parameters, as is done for AIC. Note that JAGS and WINBUGS/OPENBUGS calculate deviance in the same manner, but the same is not true for <span class="math inline">\(p_D\)</span>, which is calculated differently for JAGS and WINBUGS/OPENBUGS, which may return different values due to the calculation method. Thus, comparative analysis of model fit should be done using the same software platform.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Extensions to Bayesian Generalized Linear Mixed Effects Models for Household Tuberculosis Transmission, <span class="math inline">\(Statistics\ in\ Medicine\)</span> (2017)<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
